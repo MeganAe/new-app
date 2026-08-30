@@ -27,9 +27,13 @@ jobs:
     - name: Install Android Workload
       run: dotnet workload install android
 
-    - name: Restore dependencies
-      run: dotnet restore
+    # 1. On cible uniquement le projet Android pour éviter de restaurer iOS
+    - name: Restore Android project
+      run: |
+        PROJECT_PATH="$(find . -name "*.Android.csproj" | head -n 1)"
+        dotnet restore "$PROJECT_PATH"
 
+    # 2. Compilation ciblée sur le projet Android
     - name: Build Android APK
       run: |
         PROJECT_PATH="$(find . -name "*.Android.csproj" | head -n 1)"
