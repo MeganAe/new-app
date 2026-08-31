@@ -20,8 +20,8 @@
             <StackPanel Spacing="16" Margin="18,16,18,0">
                 <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
                     <StackPanel Spacing="2">
-                        <TextBlock Classes="brand" Text="Video Mini" />
-                        <TextBlock Classes="muted" Text="Engine" />
+                        <TextBlock Classes="brand" Text="MiniVideo" />
+                        <TextBlock Classes="muted" Text="Compresseur vidéo" />
                     </StackPanel>
                     <Border Width="42" Height="42" CornerRadius="14" Background="{DynamicResource NanoSurfaceBaseBrush}" BorderBrush="{DynamicResource NanoBorderBrush}" BorderThickness="1">
                         <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Foreground="{DynamicResource NanoPrimaryBrush}" />

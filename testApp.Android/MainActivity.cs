@@ -6,7 +6,7 @@ using Avalonia.Android;
 namespace testApp.Android;
 
 [Activity(
-    Label = "testApp.Android",
+    Label = "MiniVideo",
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/icon",
     MainLauncher = true,
