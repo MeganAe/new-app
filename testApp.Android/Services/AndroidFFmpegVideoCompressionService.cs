@@ -9,7 +9,7 @@ using testApp.Services;
 // by Microsoft). If the build fails on "namespace/class not found" here, open the
 // package's DLL in the CI log or its NuGet page to see the real namespace and we
 // adjust these usings/calls accordingly — the logic itself won't need to change.
-using FFmpegKit.Droid;
+using FFMpegKit.Droid;
 
 namespace testApp.Android.Services;
 
@@ -35,7 +35,7 @@ public class AndroidFFmpegVideoCompressionService : IVideoCompressionService
             $"-y -i \"{inputFilePath}\" {scaleArg}" +
             $"-c:v libx264 -crf {crf} -preset medium -c:a aac -b:a 128k \"{outputFilePath}\"";
 
-        global::FFmpegKit.Droid.FFmpegKit.ExecuteAsync(
+        global::FFMpegKit.Droid.FFmpegKit.ExecuteAsync(
             command,
             session =>
             {
@@ -65,7 +65,7 @@ public class AndroidFFmpegVideoCompressionService : IVideoCompressionService
                 }
             });
 
-        cancellationToken.Register(() => global::FFmpegKit.Droid.FFmpegKit.Cancel());
+        cancellationToken.Register(() => global::FFMpegKit.Droid.FFmpegKit.Cancel());
 
         return tcs.Task;
     }
