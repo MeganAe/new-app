@@ -1,0 +1,147 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Styles.Resources>
+        <Color x:Key="NanoBackground">#11131C</Color>
+        <Color x:Key="NanoSurfaceLow">#191B24</Color>
+        <Color x:Key="NanoSurfaceBase">#1D1F29</Color>
+        <Color x:Key="NanoSurfaceHigh">#282933</Color>
+        <Color x:Key="NanoPrimary">#FFD600</Color>
+        <Color x:Key="NanoPrimaryText">#0C0E17</Color>
+        <Color x:Key="NanoSecondaryContainer">#571BC1</Color>
+        <Color x:Key="NanoSecondaryElement">#D0BCFF</Color>
+        <Color x:Key="NanoTertiary">#65F2B5</Color>
+        <Color x:Key="NanoTertiaryStrong">#10B981</Color>
+        <Color x:Key="NanoText">#E1E1EF</Color>
+        <Color x:Key="NanoTextSoft">#B9BAC8</Color>
+        <Color x:Key="NanoBorder">#3A3D4A</Color>
+
+        <SolidColorBrush x:Key="NanoBackgroundBrush" Color="{StaticResource NanoBackground}" />
+        <SolidColorBrush x:Key="NanoSurfaceLowBrush" Color="{StaticResource NanoSurfaceLow}" />
+        <SolidColorBrush x:Key="NanoSurfaceBaseBrush" Color="{StaticResource NanoSurfaceBase}" />
+        <SolidColorBrush x:Key="NanoSurfaceHighBrush" Color="{StaticResource NanoSurfaceHigh}" />
+        <SolidColorBrush x:Key="NanoPrimaryBrush" Color="{StaticResource NanoPrimary}" />
+        <SolidColorBrush x:Key="NanoPrimaryTextBrush" Color="{StaticResource NanoPrimaryText}" />
+        <SolidColorBrush x:Key="NanoSecondaryContainerBrush" Color="{StaticResource NanoSecondaryContainer}" />
+        <SolidColorBrush x:Key="NanoSecondaryElementBrush" Color="{StaticResource NanoSecondaryElement}" />
+        <SolidColorBrush x:Key="NanoTertiaryBrush" Color="{StaticResource NanoTertiary}" />
+        <SolidColorBrush x:Key="NanoTertiaryStrongBrush" Color="{StaticResource NanoTertiaryStrong}" />
+        <SolidColorBrush x:Key="NanoTextBrush" Color="{StaticResource NanoText}" />
+        <SolidColorBrush x:Key="NanoTextSoftBrush" Color="{StaticResource NanoTextSoft}" />
+        <SolidColorBrush x:Key="NanoBorderBrush" Color="{StaticResource NanoBorder}" />
+
+        <FontFamily x:Key="NanoFont">Inter, "Plus Jakarta Sans", "Segoe UI", sans-serif</FontFamily>
+        <CornerRadius x:Key="NanoCardRadius">16</CornerRadius>
+        <CornerRadius x:Key="NanoPillRadius">9999</CornerRadius>
+    </Styles.Resources>
+
+    <Style Selector="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource NanoTextBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource NanoFont}" />
+    </Style>
+
+    <Style Selector="TextBlock.brand">
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="FontWeight" Value="700" />
+        <Setter Property="Foreground" Value="{StaticResource NanoPrimaryBrush}" />
+    </Style>
+
+    <Style Selector="TextBlock.label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="600" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="Opacity" Value="0.8" />
+    </Style>
+
+    <Style Selector="TextBlock.value-lg">
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="700" />
+    </Style>
+
+    <Style Selector="TextBlock.muted">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Opacity" Value="0.75" />
+        <Setter Property="Foreground" Value="{StaticResource NanoTextSoftBrush}" />
+    </Style>
+
+    <Style Selector="Border.nano-card">
+        <Setter Property="Background" Value="{StaticResource NanoSurfaceBaseBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource NanoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="Padding" Value="16" />
+    </Style>
+
+    <Style Selector="Button.btn-primary">
+        <Setter Property="Background" Value="{StaticResource NanoPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource NanoPrimaryTextBrush}" />
+        <Setter Property="CornerRadius" Value="9999" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="MinHeight" Value="48" />
+        <Setter Property="Padding" Value="20,0" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="700" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Button.btn-primary:pointerover /template/ ContentPresenter">
+        <Setter Property="Background" Value="#FFE34D" />
+    </Style>
+
+    <Style Selector="Button.btn-secondary">
+        <Setter Property="Background" Value="{StaticResource NanoSurfaceHighBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource NanoTextBrush}" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="14,10" />
+        <Setter Property="MinHeight" Value="42" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="600" />
+    </Style>
+
+    <Style Selector="ToggleButton.nano-chip">
+        <Setter Property="Background" Value="{StaticResource NanoSurfaceHighBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource NanoTextBrush}" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="MinHeight" Value="38" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="600" />
+    </Style>
+
+    <Style Selector="ToggleButton.nano-chip:checked">
+        <Setter Property="Background" Value="{StaticResource NanoSecondaryContainerBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource NanoTextBrush}" />
+    </Style>
+
+    <Style Selector="Border.nav-shell">
+        <Setter Property="Background" Value="{StaticResource NanoSurfaceBaseBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource NanoBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1,1,0,0" />
+        <Setter Property="CornerRadius" Value="20,20,0,0" />
+    </Style>
+
+    <Style Selector="Button.nav-item">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource NanoTextSoftBrush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Padding" Value="8,10" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="600" />
+    </Style>
+
+    <Style Selector="Button.nav-item:pressed, Button.nav-item:pointerover">
+        <Setter Property="Foreground" Value="{StaticResource NanoTextBrush}" />
+    </Style>
+
+    <Style Selector="ProgressBar">
+        <Setter Property="Foreground" Value="{StaticResource NanoTertiaryBrush}" />
+        <Setter Property="Background" Value="{StaticResource NanoSurfaceHighBrush}" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="CornerRadius" Value="9999" />
+    </Style>
+
+    <Style Selector="Slider">
+        <Setter Property="Foreground" Value="{StaticResource NanoSecondaryElementBrush}" />
+    </Style>
+</Styles>

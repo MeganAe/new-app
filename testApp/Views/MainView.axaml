@@ -3,16 +3,115 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:testApp.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
+             d:DesignWidth="430"
+             d:DesignHeight="932"
              x:Class="testApp.Views.MainView"
-             x:DataType="vm:MainViewModel">
+             x:DataType="vm:MainViewModel"
+             Background="{DynamicResource NanoBackgroundBrush}">
+
     <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <TextBox Text="{Binding Greeting}"
-             HorizontalAlignment="Center"
-             VerticalAlignment="Center" />
+    <Grid RowDefinitions="Auto,*,Auto" Background="{DynamicResource NanoBackgroundBrush}">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="0,0,0,20">
+            <StackPanel Spacing="16" Margin="18,16,18,0">
+                <Grid ColumnDefinitions="*,Auto" Margin="0,8,0,0">
+                    <StackPanel Spacing="2">
+                        <TextBlock Classes="brand" Text="Video Mini" />
+                        <TextBlock Classes="muted" Text="Engine" />
+                    </StackPanel>
+                    <Border Width="42" Height="42" CornerRadius="14" Background="{DynamicResource NanoSurfaceBaseBrush}" BorderBrush="{DynamicResource NanoBorderBrush}" BorderThickness="1">
+                        <TextBlock Text="⚙" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Foreground="{DynamicResource NanoPrimaryBrush}" />
+                    </Border>
+                </Grid>
+
+                <Border Classes="nano-card" Padding="18,16">
+                    <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                        <StackPanel Spacing="6">
+                            <TextBlock Classes="label" Text="Fichier source" />
+                            <TextBlock Classes="value-lg" Text="{Binding FileName, FallbackValue='Aucune vidéo sélectionnée'}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Classes="muted" Text="{Binding FileSize, FallbackValue='0 MB'}" />
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Classes="btn-secondary"
+                                Content="Importer"
+                                Command="{Binding PickVideoCommand}"
+                                VerticalAlignment="Center"
+                                MinWidth="110" />
+                        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Margin="0,12,0,0" Classes="muted" Text="Résolution détectée • 1920x1080 • 00:02:45" />
+                    </Grid>
+                </Border>
+
+                <Border Classes="nano-card" Padding="18,16">
+                    <StackPanel Spacing="16">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="label" Text="Compression" />
+                            <TextBlock Grid.Column="1" Classes="muted" Text="CRF {Binding CompressionLevel, FallbackValue=25}" />
+                        </Grid>
+
+                        <Slider Minimum="18"
+                                Maximum="35"
+                                Value="{Binding CompressionLevel}"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True" />
+
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+                            <Button Classes="btn-secondary"
+                                    Content="1080p Original"
+                                    Command="{Binding SetResolution1080Command}"
+                                    HorizontalAlignment="Stretch" />
+                            <Button Grid.Column="1"
+                                    Classes="btn-secondary"
+                                    Content="720p HD"
+                                    Command="{Binding SetResolution720Command}"
+                                    HorizontalAlignment="Stretch" />
+                        </Grid>
+
+                        <Button Classes="btn-secondary"
+                                Content="480p SD"
+                                Command="{Binding SetResolution480Command}"
+                                HorizontalAlignment="Stretch" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="nano-card" Padding="18,16">
+                    <StackPanel Spacing="14">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="label" Text="Statut &amp; progression" />
+                            <TextBlock Grid.Column="1" Classes="muted" Text="{Binding EstimatedSize, FallbackValue='~57 MB'}" Foreground="{DynamicResource NanoTertiaryBrush}" />
+                        </Grid>
+
+                        <Border Background="{DynamicResource NanoSurfaceHighBrush}" CornerRadius="12" Padding="12,10">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <TextBlock Text="Gain" Foreground="{DynamicResource NanoTertiaryBrush}" FontWeight="700" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" HorizontalAlignment="Right" Foreground="{DynamicResource NanoTertiaryBrush}" Text="{Binding EstimatedReduction, FallbackValue='-85.5 MB'}" FontWeight="700" />
+                            </Grid>
+                        </Border>
+
+                        <ProgressBar Value="{Binding ProgressValue, FallbackValue=0.42}" Maximum="1" />
+
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <TextBlock Classes="muted" Text="{Binding ProgressPercent, FallbackValue='42%'}" Foreground="{DynamicResource NanoTertiaryBrush}" FontWeight="700" />
+                            <TextBlock Grid.Column="2" Classes="muted" Text="{Binding CountdownText, FallbackValue='01:24'}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Button Classes="btn-primary"
+                        Content="COMPRESSER LA VIDÉO"
+                        Command="{Binding StartCompressionCommand}"
+                        IsEnabled="{Binding !IsProcessing}" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <Border Grid.Row="2" Classes="nav-shell" Padding="12,8,12,10">
+            <Grid ColumnDefinitions="*,*,*">
+                <Button Classes="nav-item" Content="Compresser" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Button Grid.Column="1" Classes="nav-item" Content="Historique" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <Button Grid.Column="2" Classes="nav-item" Content="Paramètres" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>
