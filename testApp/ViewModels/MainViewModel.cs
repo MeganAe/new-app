@@ -1,9 +1,11 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using testApp.Services;
 
 namespace testApp.ViewModels;
 
@@ -13,6 +15,7 @@ public partial class MainViewModel : ViewModelBase
     public IStorageProvider? StorageProvider { get; set; }
 
     private long _originalFileSizeBytes;
+    private string? _localInputPath;
 
     [ObservableProperty]
     private string _fileName = "Aucune vidéo sélectionnée";
@@ -43,6 +46,9 @@ public partial class MainViewModel : ViewModelBase
 
     [ObservableProperty]
     private bool _isProcessing;
+
+    [ObservableProperty]
+    private string? _statusMessage;
 
     public bool HasFile => _originalFileSizeBytes > 0;
 
@@ -76,9 +82,21 @@ public partial class MainViewModel : ViewModelBase
         }
 
         FileName = file.Name;
+        StatusMessage = null;
 
-        var properties = await file.GetBasicPropertiesAsync();
-        _originalFileSizeBytes = (long)(properties.Size ?? 0);
+        // On copie systématiquement vers un chemin local temporaire : sur Android, le fichier
+        // choisi vient souvent d'un content:// (Storage Access Framework) que ffmpeg ne sait
+        // pas lire directement, donc on a besoin d'un vrai chemin sur disque.
+        var extension = Path.GetExtension(file.Name);
+        _localInputPath = Path.Combine(Path.GetTempPath(), $"input_{Guid.NewGuid():N}{extension}");
+
+        await using (var sourceStream = await file.OpenReadAsync())
+        await using (var destStream = File.Create(_localInputPath))
+        {
+            await sourceStream.CopyToAsync(destStream);
+        }
+
+        _originalFileSizeBytes = new FileInfo(_localInputPath).Length;
         FileSize = FormatBytes(_originalFileSizeBytes);
 
         RecalculateEstimate();
@@ -108,28 +126,95 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task StartCompressionAsync()
     {
-        if (!HasFile || IsProcessing)
+        if (!HasFile || IsProcessing || _localInputPath is null)
         {
             return;
         }
 
-        IsProcessing = true;
-        ProgressValue = 0;
-        ProgressPercent = "0%";
-
-        // TODO: remplacer cette simulation par un vrai encodage vidéo
-        // (ex: FFmpeg via un binding natif) une fois le moteur de compression choisi.
-        const int steps = 20;
-        for (var i = 1; i <= steps; i++)
+        var compressor = VideoCompressionServiceLocator.Current;
+        if (compressor is null)
         {
-            await Task.Delay(150);
-            ProgressValue = (double)i / steps;
-            ProgressPercent = $"{ProgressValue:P0}";
-            var remainingSeconds = (steps - i) * 0.15;
-            CountdownText = TimeSpan.FromSeconds(remainingSeconds).ToString(@"mm\:ss");
+            StatusMessage = "La compression vidéo n'est pas encore disponible sur cette plateforme.";
+            return;
         }
 
-        IsProcessing = false;
+        IsProcessing = true;
+        StatusMessage = null;
+        ProgressValue = 0;
+        ProgressPercent = "0%";
+        CountdownText = "--:--";
+
+        var outputPath = Path.Combine(Path.GetTempPath(), $"output_{Guid.NewGuid():N}.mp4");
+        var scaleFilter = SelectedResolution switch
+        {
+            "720p" => "1280:720",
+            "480p" => "854:480",
+            _ => null
+        };
+
+        var startedAt = DateTime.UtcNow;
+        var progressReporter = new Progress<double>(fraction =>
+        {
+            ProgressValue = fraction;
+            ProgressPercent = $"{fraction:P0}";
+
+            var elapsed = DateTime.UtcNow - startedAt;
+            if (fraction > 0.02)
+            {
+                var estimatedTotal = elapsed / fraction;
+                var remaining = estimatedTotal - elapsed;
+                if (remaining < TimeSpan.Zero) remaining = TimeSpan.Zero;
+                CountdownText = remaining.ToString(@"mm\:ss");
+            }
+        });
+
+        try
+        {
+            await compressor.CompressAsync(_localInputPath, outputPath, CompressionLevel, scaleFilter, progressReporter, default);
+
+            ProgressValue = 1;
+            ProgressPercent = "100%";
+            CountdownText = "00:00";
+
+            var compressedSize = new FileInfo(outputPath).Length;
+            EstimatedSize = FormatBytes(compressedSize);
+            EstimatedReduction = $"-{FormatBytes(Math.Max(0, _originalFileSizeBytes - compressedSize))}";
+
+            await SaveCompressedFileAsync(outputPath);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Échec de la compression : {ex.Message}";
+        }
+        finally
+        {
+            IsProcessing = false;
+        }
+    }
+
+    private async Task SaveCompressedFileAsync(string compressedFilePath)
+    {
+        if (StorageProvider is null)
+        {
+            return;
+        }
+
+        var suggestedName = $"compressed_{Path.GetFileNameWithoutExtension(FileName)}.mp4";
+        var destination = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "Enregistrer la vidéo compressée",
+            SuggestedFileName = suggestedName,
+            DefaultExtension = "mp4"
+        });
+
+        if (destination is null)
+        {
+            return;
+        }
+
+        await using var sourceStream = File.OpenRead(compressedFilePath);
+        await using var destStream = await destination.OpenWriteAsync();
+        await sourceStream.CopyToAsync(destStream);
     }
 
     private void RecalculateEstimate()
@@ -142,6 +227,8 @@ public partial class MainViewModel : ViewModelBase
         }
 
         // Heuristique simple: le CRF et la résolution cible influencent le ratio de compression.
+        // Ce n'est qu'une estimation affichée AVANT compression ; la vraie taille finale (après
+        // encodage réel) remplace ces valeurs une fois StartCompressionCommand terminé.
         var resolutionFactor = SelectedResolution switch
         {
             "720p" => 0.55,

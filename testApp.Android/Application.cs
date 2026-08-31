@@ -2,6 +2,8 @@
 using Android.Runtime;
 using Avalonia;
 using Avalonia.Android;
+using testApp.Android.Services;
+using testApp.Services;
 
 namespace testApp.Android
 {
@@ -14,6 +16,8 @@ namespace testApp.Android
 
         protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
         {
+            VideoCompressionServiceLocator.Current = new AndroidFFmpegVideoCompressionService();
+
             return base.CustomizeAppBuilder(builder)
             .WithInterFont();
         }

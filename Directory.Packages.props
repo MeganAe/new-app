@@ -18,5 +18,8 @@
         <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 
         <PackageVersion Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.0.1.15" />
+
+        <!-- FFmpeg pour la compression vidéo réelle sur Android (binding communautaire) -->
+        <PackageVersion Include="Drastic.FFMpegKit.Full.Android" Version="5.1.1" />
     </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:testApp.ViewModels"
+             xmlns:conv="using:Avalonia.Data.Converters"
              mc:Ignorable="d"
              d:DesignWidth="430"
              d:DesignHeight="932"
@@ -103,6 +104,12 @@
                         Content="COMPRESSER LA VIDÉO"
                         Command="{Binding StartCompressionCommand}"
                         IsEnabled="{Binding !IsProcessing}" />
+
+                <TextBlock Classes="muted"
+                           Text="{Binding StatusMessage}"
+                           Foreground="#FF6B6B"
+                           TextWrapping="Wrap"
+                           IsVisible="{Binding StatusMessage, Converter={x:Static conv:ObjectConverters.IsNotNull}}" />
             </StackPanel>
         </ScrollViewer>
 
